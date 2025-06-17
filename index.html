@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Credit Card Fraud Detection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    Bootstrap 5 CDN 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0de2ed;
+        }
+        .container {
+            max-width: 900px;
+        }
+        .card {
+            margin-top: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .example table, .features table {
+            font-size: 14px;
+        }
+        .prediction {
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="text-center mt-5">
+        <h2>💳 Credit Card Fraud Detection</h2>
+        <p class="text-muted">Enter the transaction features to predict fraud risk</p>
+    </div>
+
+    <div class="card p-4">
+        <form action="/predict" method="POST">
+            <div class="row">
+                {% for i in range(1, 29) %}
+                    <div class="col-md-4 mb-3">
+                        <label for="V{{i}}" class="form-label">V{{i}}</label>
+                        <input type="text" class="form-control" id="V{{i}}" name="V{{i}}" required>
+                    </div>
+                {% endfor %}
+                <div class="col-md-4 mb-3">
+                    <label for="Amount" class="form-label">Amount</label>
+                    <input type="text" class="form-control" id="Amount" name="Amount" required>
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary px-5 mt-2">Predict Fraud</button>
+                <button type="button" class="btn btn-secondary px-4 mt-2 ms-2" onclick="fillRandom()">Random Generate</button>
+            </div>
+        </form>
+    </div>
+
+    {% if prediction_text %}
+        <div class="alert alert-info text-center mt-4 prediction">
+            {{ prediction_text }}
+        </div>
+    {% endif %}
+
+    {% if features %}
+        <div class="card p-3 mt-4 features">
+            <h5 class="text-center">🔍 Entered Transaction Features</h5>
+            <table class="table table-bordered table-striped mt-3">
+                <thead><tr><th>Feature</th><th>Value</th></tr></thead>
+                <tbody>
+                {% for feature, value in features.items() %}
+                    <tr><td>{{ feature }}</td><td>{{ value }}</td></tr>
+                {% endfor %}
+                <tr><th>Amount</th><td>{{ amount }}</td></tr>
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    {% if example_data %}
+        <div class="card p-3 mt-4 example">
+            <h5 class="text-center">📘 Example Data</h5>
+            <p class="text-center text-muted">You can refer to this as an input example.</p>
+            <table class="table table-bordered table-sm mt-2">
+                <thead><tr><th>Feature</th><th>Example Value</th></tr></thead>
+                <tbody>
+                {% for feature, value in example_data.items() %}
+                    <tr><td>{{ feature }}</td><td>{{ value }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    <div class="card p-4 mt-4">
+        <h5>🔎 How It Works</h5>
+        <p>This model uses 28 anonymized features (V1 to V28) and a scaled transaction amount. These features are derived using PCA (Principal Component Analysis) to protect user confidentiality. Once you submit your input, the trained Random Forest model compares it with known fraud patterns to predict whether the transaction is fraudulent or legitimate.</p>
+    </div>
+</div>
+
+JavaScript for Random Filling 
+<script>
+    function fillRandom() {
+        for (let i = 1; i <= 28; i++) {
+            document.getElementById('V' + i).value = (Math.random() * 4 - 2).toFixed(4);
+        }
+        document.getElementById('Amount').value = (Math.random() * 1000).toFixed(2);
+    }
+</script>
+
+Bootstrap JS 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
